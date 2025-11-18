@@ -62,6 +62,98 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
+  /* -------------------- Page Background -------------------- */
+body {
+  background-color: #f7f9fc; /* Soft light gray-blue */
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------------------- Job Cards -------------------- */
+.job-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect for cards */
+.job-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
+
+/* -------------------- Job Titles -------------------- */
+.job-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #1f2937; /* Dark gray-blue */
+}
+
+/* -------------------- Company & Details -------------------- */
+.company-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.job-details {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* -------------------- Apply Button -------------------- */
+.apply-btn {
+  background-color: #4f46e5; /* Indigo */
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.apply-btn:hover {
+  background-color: #6366f1;
+  transform: scale(1.05);
+}
+
+/* -------------------- Badges / Job Type -------------------- */
+.badge {
+  display: inline-block;
+  background-color: #eef2ff;
+  color: #4f46e5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* -------------------- Job List Layout -------------------- */
+.job-list {
+  padding: 40px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* -------------------- Responsive Titles -------------------- */
+@media (max-width: 768px) {
+  .job-title {
+    font-size: 1rem;
+  }
+}
+
   button {
     background-color: #f9f9f9;
   }
