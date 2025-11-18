@@ -28,7 +28,7 @@ function App() {
       });
       if (expMin) params.append("exp_min", expMin);
       if (expMax) params.append("exp_max", expMax);
-
+      params.append("size", "50"); 
       const res = await fetch(`${API_BASE}/jobs?${params.toString()}`);
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`);
