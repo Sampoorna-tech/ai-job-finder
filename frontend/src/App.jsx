@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const api_base = "https://ai-job-finder-tmiz.onrender.com";
+const API_BASE = "https://ai-job-finder-tmiz.onrender.com";
 
 function formatINR(amount) {
   if (!amount) return null;
