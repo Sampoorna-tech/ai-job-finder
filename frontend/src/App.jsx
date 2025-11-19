@@ -14,6 +14,8 @@ function App() {
   const [expMin, setExpMin] = useState("");
   const [expMax, setExpMax] = useState("");
   const [jobs, setJobs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 10;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -49,6 +51,7 @@ for (let p = 1; p <= 3; p++) {
 }
 
 setJobs(allJobs);
+setCurrentPage(1);
 
     } catch (err) {
       console.error(err);
@@ -67,7 +70,7 @@ setJobs(allJobs);
     <div style={{ fontFamily: "system-ui, sans-serif", padding: "16px", maxWidth: "960px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: "8px" }}>India Job Finder</h1>
       <p style={{ marginTop: 0, color: "#555" }}>
-        Search jobs by role & city, with salary estimations where data is missing.
+        Search  jobs by role & city, with salary estimations where data is missing.
       </p>
 
       <form onSubmit={fetchJobs} style={{
@@ -146,7 +149,42 @@ setJobs(allJobs);
       {loading && <div>Loading jobs…</div>}
 
       <div style={{ display: "grid", gap: "12px", marginTop: "8px" }}>
-        {jobs.map((job, idx) => {
+   // JS area (inside component, before return)
+const start = (currentPage - 1) * jobsPerPage;
+const end = start + jobsPerPage;
+const paginatedJobs = jobs.slice(start, end);
+
+return (
+  <>
+    <div className="job-list">
+      {paginatedJobs.map((job, idx) => (
+        <JobCard job={job} key={idx} />
+      ))}
+    </div>
+
+    {/* ADD PAGINATION BUTTONS HERE */}
+    <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "20px" }}>
+      <button
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage(currentPage - 1)}
+        className="apply-btn"
+      >
+        Previous
+      </button>
+
+      <button
+        disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
+        onClick={() => setCurrentPage(currentPage + 1)}
+        className="apply-btn"
+      >
+        Next
+      </button>
+    </div>
+  </>
+);
+
+
+ {
           const hasRealSalary = job.salary_min || job.salary_max;
           const hasEst = job.salary_est_min || job.salary_est_max;
 
