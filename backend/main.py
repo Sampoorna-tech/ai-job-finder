@@ -146,7 +146,7 @@ async def get_jobs(
     params = {
         "query": query,
         "page": page,
-        "num_pages": 3,
+        "num_pages": 1,
     }
 
     headers = {
