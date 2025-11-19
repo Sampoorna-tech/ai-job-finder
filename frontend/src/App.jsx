@@ -65,7 +65,7 @@ setJobs(allJobs);
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", padding: "16px", maxWidth: "960px", margin: "0 auto" }}>
-      <h1 style={{ marginBottom: "8px" }}>India IT Job Finder</h1>
+      <h1 style={{ marginBottom: "8px" }}>India Job Finder</h1>
       <p style={{ marginTop: 0, color: "#555" }}>
         Search IT jobs by role & city, with salary estimations where data is missing.
       </p>
