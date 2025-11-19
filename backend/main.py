@@ -138,52 +138,50 @@ async def get_jobs(
     if not JSEARCH_KEY:
         raise RuntimeError("Set JSEARCH_KEY env var with your RapidAPI key for jsearch.")
 
-    # query construction
+    # Build the search query JSearch expects
     query = f"{role} in India"
     if city:
         query = f"{role} in {city}, India"
 
+    # We keep num_pages = 1 because your FRONTEND is already
+    # calling page=1,2,3 and combining the results.
     params = {
         "query": query,
         "page": page,
         "num_pages": 1,
     }
 
-   headers = {
-    "X-RapidAPI-Key": JSEARCH_KEY,
-    "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
-}
+    headers = {
+        "X-RapidAPI-Key": JSEARCH_KEY,
+        "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
+    }
 
-async with httpx.AsyncClient(timeout=20.0) as client:
-    try:
-        resp = await client.get(
-            "https://jsearch.p.rapidapi.com/search",
-            params=params,
-            headers=headers,
-        )
+    # ---- Call JSearch safely ----
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        try:
+            resp = await client.get(
+                "https://jsearch.p.rapidapi.com/search",
+                params=params,
+                headers=headers,
+            )
 
-        # If JSearch says "Too Many Requests"
-        if resp.status_code == 429:
-            print("JSearch rate limit hit (429). Returning empty job list.")
-            return {"jobs": []}  # so frontend doesn't break
+            # If JSearch rate limit is hit, don't crash the backend
+            if resp.status_code == 429:
+                print("JSearch rate limit hit (429). Returning empty job list.")
+                return []
 
-        # Raise for any other non-200 errors
-        resp.raise_for_status()
+            # For other non-200 errors, raise
+            resp.raise_for_status()
 
-    except httpx.HTTPError as exc:
-        print(f"Error while calling JSearch: {exc}")
-        # Return empty list instead of 500 so frontend shows "no jobs"
-        return {"jobs": []}
+            data = resp.json().get("data", [])
+        except httpx.HTTPError as exc:
+            print(f"Error while calling JSearch: {exc}")
+            # Return an empty list so frontend shows "no jobs" instead of 500
+            return []
 
-data = resp.json()
-jobs = data.get("data", [])
-return {"jobs": jobs}
-
-        
-        resp.raise_for_status()
-        data = resp.json().get("data", [])
-
+    # ---- Normalize jobs into our Job model ----
     jobs: list[Job] = []
+
     for item in data[:size]:
         title = item.get("job_title") or "Unknown"
         company = item.get("employer_name")
@@ -224,7 +222,8 @@ return {"jobs": jobs}
             salary_est_max=est_max,
             posted_at=posted_at,
             source="jsearch",
-            apply_url=item.get("job_apply_link") or item.get("job_google_link")
+            apply_url=item.get("job_apply_link") or item.get("job_google_link"),
         ))
 
     return jobs
+
