@@ -31,27 +31,21 @@ function App() {
       if (expMin) params.append("exp_min", expMin);
       if (expMax) params.append("exp_max", expMax);
       params.append("size", "50"); 
-    const allJobs = [];
+    // ONE call to your backend – backend already has num_pages: 3
+const res = await fetch(`${API_BASE}/jobs?${params.toString()}`);
 
-for (let p = 1; p <= 3; p++) {
-  const pageParams = new URLSearchParams(params); // clone original params
-  pageParams.set("page", p);                      // set page number
-
-  const res = await fetch(`${API_BASE}/jobs?${pageParams.toString()}`);
-
-  if (!res.ok) {
-    throw new Error(`API error: ${res.status}`);
-  }
-
-  const data = await res.json();
-
-  if (data && data.length > 0) {
-    allJobs.push(...data);   // add results to master list
-  }
+if (!res.ok) {
+  throw new Error(`API error: ${res.status}`);
 }
 
-setJobs(allJobs);
-setCurrentPage(1);
+const data = await res.json();
+
+// Support both shapes: [] or { jobs: [] }
+const jobsFromApi = Array.isArray(data) ? data : (data.jobs || []);
+
+setJobs(jobsFromApi);
+setCurrentPage(1); // reset to first page when new results load
+
 
     } catch (err) {
       console.error(err);
