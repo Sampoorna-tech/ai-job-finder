@@ -149,13 +149,37 @@ async def get_jobs(
         "num_pages": 1,
     }
 
-    headers = {
-        "X-RapidAPI-Key": JSEARCH_KEY,
-        "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
-    }
+   headers = {
+    "X-RapidAPI-Key": JSEARCH_KEY,
+    "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
+}
 
-    async with httpx.AsyncClient(timeout=20.0) as client:
-        resp = await client.get("https://jsearch.p.rapidapi.com/search", params=params, headers=headers)
+async with httpx.AsyncClient(timeout=20.0) as client:
+    try:
+        resp = await client.get(
+            "https://jsearch.p.rapidapi.com/search",
+            params=params,
+            headers=headers,
+        )
+
+        # If JSearch says "Too Many Requests"
+        if resp.status_code == 429:
+            print("JSearch rate limit hit (429). Returning empty job list.")
+            return {"jobs": []}  # so frontend doesn't break
+
+        # Raise for any other non-200 errors
+        resp.raise_for_status()
+
+    except httpx.HTTPError as exc:
+        print(f"Error while calling JSearch: {exc}")
+        # Return empty list instead of 500 so frontend shows "no jobs"
+        return {"jobs": []}
+
+data = resp.json()
+jobs = data.get("data", [])
+return {"jobs": jobs}
+
+        
         resp.raise_for_status()
         data = resp.json().get("data", [])
 
