@@ -146,7 +146,7 @@ async def get_jobs(
     params = {
         "query": query,
         "page": page,
-        "num_pages": 1,   # keep this 1 for now to reduce API usage
+        "num_pages": 3,   # keep this 1 for now to reduce API usage
     }
 
     headers = {
