@@ -158,3 +158,89 @@ body {
     background-color: #f9f9f9;
   }
 }
+/* === Global page styling for AI Job Finder === */
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f7f9fc; /* soft light background */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #333333;
+}
+
+/* Container that holds all job cards */
+.job-list {
+  padding: 40px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Each job card */
+.job-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: all 0.25s ease;
+}
+
+/* Hover effect on job cards */
+.job-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Job title */
+.job-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+/* Company name */
+.company-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
+
+/* Small details like location, salary, etc. */
+.job-details {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* Badges like Remote / Full-time */
+.badge {
+  display: inline-block;
+  background-color: #eef2ff;
+  color: #4f46e5;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  margin-right: 6px;
+  margin-top: 8px;
+}
+
+/* Apply / View button */
+.apply-btn {
+  margin-top: 14px;
+  background-color: #4f46e5; /* indigo */
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.apply-btn:hover {
+  background-color: #6366f1;
+  transform: scale(1.03);
+}
