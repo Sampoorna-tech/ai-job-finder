@@ -138,17 +138,15 @@ async def get_jobs(
     if not JSEARCH_KEY:
         raise RuntimeError("Set JSEARCH_KEY env var with your RapidAPI key for jsearch.")
 
-    # Build the search query JSearch expects
+    # Build the search query
     query = f"{role} in India"
     if city:
         query = f"{role} in {city}, India"
 
-    # We keep num_pages = 1 because your FRONTEND is already
-    # calling page=1,2,3 and combining the results.
     params = {
         "query": query,
         "page": page,
-        "num_pages": 1,
+        "num_pages": 1,   # keep this 1 for now to reduce API usage
     }
 
     headers = {
@@ -156,7 +154,6 @@ async def get_jobs(
         "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
     }
 
-    # ---- Call JSearch safely ----
     async with httpx.AsyncClient(timeout=20.0) as client:
         try:
             resp = await client.get(
@@ -165,23 +162,20 @@ async def get_jobs(
                 headers=headers,
             )
 
-            # If JSearch rate limit is hit, don't crash the backend
+            # If JSearch says "Too Many Requests"
             if resp.status_code == 429:
-                print("JSearch rate limit hit (429). Returning empty job list.")
-                return []
+                print("JSearch rate limit hit (429). Returning empty list.")
+                return []  # empty jobs so frontend shows "no jobs" instead of breaking
 
-            # For other non-200 errors, raise
             resp.raise_for_status()
 
-            data = resp.json().get("data", [])
         except httpx.HTTPError as exc:
             print(f"Error while calling JSearch: {exc}")
-            # Return an empty list so frontend shows "no jobs" instead of 500
-            return []
+            return []  # again, return empty list on error
 
-    # ---- Normalize jobs into our Job model ----
+    data = resp.json().get("data", [])
+
     jobs: list[Job] = []
-
     for item in data[:size]:
         title = item.get("job_title") or "Unknown"
         company = item.get("employer_name")
@@ -222,8 +216,9 @@ async def get_jobs(
             salary_est_max=est_max,
             posted_at=posted_at,
             source="jsearch",
-            apply_url=item.get("job_apply_link") or item.get("job_google_link"),
+            apply_url=item.get("job_apply_link") or item.get("job_google_link")
         ))
 
     return jobs
+
 
